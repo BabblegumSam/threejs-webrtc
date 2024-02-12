@@ -18,6 +18,8 @@ let peers = {};
 // Variable to store our three.js scene:
 let myScene;
 
+const myAudioContext = new AudioContext();
+
 // set video width / height / framerate here:
 const videoWidth = 80;
 const videoHeight = 60;
@@ -149,6 +151,7 @@ function initSocketConnection() {
 
     // Look for the right simplepeer in our array
     let peer = peers[from];
+    // console.log(peer + "the right peer")
     if (peer.peerConnection) {
       peer.peerConnection.signal(data);
     } else {
@@ -274,11 +277,23 @@ function createClientMediaElements(_id) {
   document.body.appendChild(audioEl);
 
   audioEl.addEventListener("loadeddata", () => {
+    //pass the element to context
+    // myAudioContext.createMediaElementSource(audioEl);
+    // let osc = myAudioContent.createOscillator();
+    // osc.type = 'square'
+    // osc.frequency.setValueAtTime(440, myAudioContext.currentTime); // value in hertz
+    // osc.connect(myAudioContext.destination);
+    // osc.start();
+
+
+
     audioEl.play();
   });
 }
 
 function updateClientMediaElements(_id, stream) {
+
+  console.log(_id + "update client media id" + stream + " this is the stream")
 
   let videoStream = new MediaStream([stream.getVideoTracks()[0]]);
   let audioStream = new MediaStream([stream.getAudioTracks()[0]]);

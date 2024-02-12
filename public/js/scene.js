@@ -31,7 +31,25 @@ class Scene {
 
     // create an AudioListener and add it to the camera
     this.listener = new THREE.AudioListener();
+
+    this.filter = this.listener.context.createBiquadFilter();
+    this.filter.type = 'lowpass'
+    this.filter.frequency.setValueAtTime(1000, this.listener.context.currentTime + 1);
+
+    this.context  = this.listener.context;
+
+    // this.context.createMediaElementSource(audioEl);
+    let osc = this.context.createOscillator();
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(440, this.context.currentTime); // value in hertz
+    osc.connect(this.context.destination);
+    osc.start();
+
+    this.listener.setFilter(this.filter);
+
     this.camera.add(this.listener);
+
+
 
     //THREE WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -137,6 +155,8 @@ class Scene {
         let distSquared = this.camera.position.distanceToSquared(
           peers[id].group.position
         );
+
+        //add filtering
 
         if (distSquared > 500) {
           audioEl.volume = 0;
